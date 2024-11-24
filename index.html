@@ -29,6 +29,14 @@
         list-style: disc;
         padding-left: 1.5rem;
       }
+
+      footer {
+        margin-top: auto;
+        padding: 1rem;
+        text-align: center;
+        background-color: #2d3748;
+        color: #a0aec0;
+      }
     </style>
   </head>
   <body class="min-h-screen flex flex-col items-center justify-center p-4">
@@ -92,6 +100,10 @@
     </div>
 
     <div id="errorMessage" class="mt-6 text-red-500 hidden"></div>
+
+    <footer>
+      <p>&copy; 2024 GitHub README Generator</p>
+    </footer>
 
     <script>
       const usernameForm = document.getElementById("usernameForm");
@@ -237,7 +249,7 @@
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    message: sha ? "Updating README.md" : "initial README.md",
+                    message: sha ? "Updating README.md" : "Initial README.md",
                     content: encodedContent,
                     sha: sha,
                   }),
@@ -245,30 +257,26 @@
               );
 
               if (!apiResponse.ok) {
-                const errorDetails = await apiResponse.json();
                 throw new Error(
-                  `Failed to update or create README.md: ${errorDetails.message}`,
+                  `Error setting README: ${await apiResponse.text()}`,
                 );
               }
 
-              alert("README.md was added!");
-            } catch (err) {
-              console.error("Error:", err);
-              alert("Error: " + err.message);
+              alert("README set successfully.");
+            } catch (error) {
+              alert(`Error: ${error.message}`);
             }
           };
 
-          getTokenButton.onclick = () => {
-            window.open(
-              "https://github.com/settings/tokens/new?scopes=repo&description=README+Generator",
-              "_blank",
-            );
+          getTokenButton.onclick = async () => {
+            alert("Please generate a GitHub Personal Access Token with 'repo' scope.");
           };
         } catch (error) {
-          errorMessage.textContent = error.message;
+          errorMessage.textContent = `Error: ${error.message}`;
           errorMessage.classList.remove("hidden");
         }
       });
     </script>
   </body>
 </html>
+
