@@ -1,3 +1,4 @@
+## <a href="https://sudo-self.github.io/README/">README Generator</a><hr>
 
 # Sudo-Self
 
