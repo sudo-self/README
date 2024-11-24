@@ -182,74 +182,71 @@
           URL.revokeObjectURL(url);
         };
 
-        setReadmeButton.onclick = async () => {
-          const token = prompt(
-            'Enter your GitHub Personal Access Token (with repo scope):'
-          );
-          if (!token) {
-            alert('Token is required to set the README.');
-            return;
-          }
+setReadmeButton.onclick = async () => {
+  const token = prompt(
+    'Enter your GitHub Personal Access Token (with repo scope):'
+  );
+  if (!token) {
+    alert('Token is required to set the README.');
+    return;
+  }
 
-          const repoName = prompt('Enter the name of your repository:');
-          if (!repoName) {
-            alert('Repository name is required.');
-            return;
-          }
+  const repoName = prompt('Enter the name of your repository:');
+  if (!repoName) {
+    alert('Repository name is required.');
+    return;
+  }
 
-          try {
-       
-            const fileResponse = await fetch(
-              `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
+  try {
+    const fileResponse = await fetch(
+      `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-            let sha = null;
-            let encodedContent = btoa(readme);
+    let sha = null;
+    let encodedContent = btoa(readme);
 
-            if (fileResponse.ok) {
-         
-              const fileData = await fileResponse.json();
-              sha = fileData.sha;
-            } else if (fileResponse.status === 404) {
-       
-              sha = null;
-            } else {
-              throw new Error('Failed to fetch README.md file data');
-            }
+    if (fileResponse.ok) {
+      const fileData = await fileResponse.json();
+      sha = fileData.sha;
+    } else if (fileResponse.status === 404) {
+      sha = null;
+    } else {
+      throw new Error('Failed to fetch README.md file data');
+    }
 
-         
-            const apiResponse = await fetch(
-              `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
-              {
-                method: 'PUT',
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  message: 'Updating README.md',
-                  content: encodedContent,
-                  sha: sha,
-                }),
-              }
-            );
+    const apiResponse = await fetch(
+      `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: 'Updating README.md',
+          content: encodedContent,
+          sha: sha, 
+        }),
+      }
+    );
 
-            if (!apiResponse.ok) {
-              const errorDetails = await apiResponse.json();
-              throw new Error(`Failed to update README.md: ${errorDetails.message}`);
-            }
+    if (!apiResponse.ok) {
+      const errorDetails = await apiResponse.json();
+      throw new Error(`Failed to update README.md: ${errorDetails.message}`);
+    }
 
-            alert('README.md has been successfully updated!');
-          } catch (err) {
-            console.error('Error:', err); 
-            alert('Error: ' + err.message);
-          }
-        };
+    alert('README.md has been successfully updated!');
+  } catch (err) {
+    console.error('Error:', err);
+    alert('Error: ' + err.message);
+  }
+};
+
 
 
 
