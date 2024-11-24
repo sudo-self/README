@@ -39,8 +39,7 @@
         color: #f7fafc;
       }
 
-      input,
-      button {
+      input, button {
         outline: none;
       }
 
@@ -112,183 +111,180 @@
     <div id="errorMessage" class="mt-6 text-red-500 hidden"></div>
 
     <footer>
-      <p>
-        <a href="https://sudo-self.github.io/README/" class="text-blue-400"
-          >sudo-self.github.io/README</a
-        >
-      </p>
+      <p><a href="https://sudo-self.github.io/README/" class="text-blue-400">sudo-self.github.io/README</a></p>
     </footer>
 
     <script>
-            const usernameForm = document.getElementById("usernameForm");
-            const usernameInput = document.getElementById("usernameInput");
-            const readmeDisplay = document.getElementById("readmeDisplay");
-            const readmePreview = document.getElementById("readmePreview");
-            const downloadButton = document.getElementById("downloadButton");
-            const setReadmeButton = document.getElementById("setReadmeButton");
-            const getTokenButton = document.getElementById("getTokenButton");
-            const errorMessage = document.getElementById("errorMessage");
+      const usernameForm = document.getElementById("usernameForm");
+      const usernameInput = document.getElementById("usernameInput");
+      const readmeDisplay = document.getElementById("readmeDisplay");
+      const readmePreview = document.getElementById("readmePreview");
+      const downloadButton = document.getElementById("downloadButton");
+      const setReadmeButton = document.getElementById("setReadmeButton");
+      const getTokenButton = document.getElementById("getTokenButton");
+      const errorMessage = document.getElementById("errorMessage");
 
-            usernameForm.addEventListener("submit", async (e) => {
-              e.preventDefault();
-              const username = usernameInput.value.trim();
+      usernameForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const username = usernameInput.value.trim();
 
-              if (!username) return;
+        if (!username) return;
 
-              readmeDisplay.classList.add("hidden");
-              errorMessage.classList.add("hidden");
+        readmeDisplay.classList.add("hidden");
+        errorMessage.classList.add("hidden");
 
-              try {
-                const response = await fetch(
-                  `https://api.github.com/users/${username}`,
-                  { headers: { Accept: "application/vnd.github.v3+json" } },
+        try {
+          const response = await fetch(
+            `https://api.github.com/users/${username}`,
+            { headers: { Accept: "application/vnd.github.v3+json" } },
+          );
+
+          if (!response.ok) {
+            throw new Error("User not found");
+          }
+
+          const data = await response.json();
+
+          const readme = `
+# ${data.name || data.login}
+
+![Profile Avatar](${data.avatar_url})
+
+**Bio**: ${data.bio || "No bio available."}  
+**Location**: ${data.location || "Not specified"}  
+**Company**: ${data.company || "Not specified"}  
+**Website**: [${data.blog}](${data.blog || "#"})  
+
+## GitHub Stats
+- Public Repositories: ${data.public_repos}
+- Public Gists: ${data.public_gists}
+- Followers: ${data.followers}
+- Following: ${data.following}
+
+### Connect with me:
+- GitHub: [${data.login}](${data.html_url})
+- Twitter: [${data.twitter_username || "Not specified"}](https://twitter.com/${
+            data.twitter_username || ""
+          })
+`;
+
+          const renderedHTML = `
+<h1>${data.name || data.login}</h1>
+<img src="${data.avatar_url}" alt="Avatar" />
+<p><strong>Bio</strong>: ${data.bio || "No bio available."}</p>
+<p><strong>Location</strong>: ${data.location || "Not specified"}</p>
+<p><strong>Company</strong>: ${data.company || "Not specified"}</p>
+<p><strong>Website</strong>: <a href="${data.blog || "#"}">${
+            data.blog || "Not specified"
+          }</a></p>
+
+<h2>GitHub Stats</h2>
+<ul>
+  <li>Public Repositories: ${data.public_repos}</li>
+  <li>Public Gists: ${data.public_gists}</li>
+  <li>Followers: ${data.followers}</li>
+  <li>Following: ${data.following}</li>
+</ul>
+
+<h3>Connect with me:</h3>
+<ul>
+  <li>GitHub: <a href="${data.html_url}">${data.login}</a></li>
+  <li>Twitter: <a href="https://twitter.com/${data.twitter_username || ""}">${
+    data.twitter_username || "Not specified"
+  }</a></li>
+</ul>
+`;
+
+          readmePreview.innerHTML = renderedHTML;
+          readmeDisplay.classList.remove("hidden");
+
+          downloadButton.onclick = () => {
+            const blob = new Blob([readme], { type: "text/markdown" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "README.md";
+            a.click();
+            URL.revokeObjectURL(url);
+          };
+
+          setReadmeButton.onclick = async () => {
+            const token = prompt(
+              "Enter your GitHub Personal Access Token (with repo scope):",
+            );
+            if (!token) {
+              alert("Token is required to set the README.");
+              return;
+            }
+
+            const repoName = prompt("Enter the name of your repository:");
+            if (!repoName) {
+              alert("Repository name is required.");
+              return;
+            }
+
+            try {
+              const fileResponse = await fetch(
+                `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              );
+
+              let sha = null;
+              let encodedContent = btoa(readme);
+
+              if (fileResponse.ok) {
+                const fileData = await fileResponse.json();
+                sha = fileData.sha;
+              } else if (fileResponse.status === 404) {
+                sha = null;
+                console.log("README not found. Preparing to create a new one.");
+              } else {
+                const errorDetails = await fileResponse.json();
+                throw new Error(
+                  `Failed to fetch README.md file data: ${errorDetails.message}`,
                 );
+              }
 
-                if (!response.ok) {
-                  throw new Error("User not found");
-                }
+              const apiResponse = await fetch(
+                `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
+                {
+                  method: "PUT",
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    message: "Update README.md via GitHub API",
+                    content: encodedContent,
+                    sha,
+                  }),
+                },
+              );
 
-                const data = await response.json();
+              if (apiResponse.ok) {
+                alert("README file updated successfully!");
+              } else {
+                const errorData = await apiResponse.json();
+                alert(`Error: ${errorData.message}`);
+              }
+            } catch (error) {
+              alert(`Error: ${error.message}`);
+            }
+          };
+        } catch (error) {
+          errorMessage.textContent = "User not found or API error.";
+          errorMessage.classList.remove("hidden");
+        }
+      });
 
-                const readme = `
-      # ${data.name || data.login}
-
-      ![Profile Avatar](${data.avatar_url})
-
-      **Bio**: ${data.bio || "No bio available."}
-      **Location**: ${data.location || "Not specified"}
-      **Company**: ${data.company || "Not specified"}
-      **Website**: [${data.blog}](${data.blog || "#"})
-
-      ## GitHub Stats
-      - Public Repositories: ${data.public_repos}
-      - Public Gists: ${data.public_gists}
-      - Followers: ${data.followers}
-      - Following: ${data.following}
-
-      ### Connect with me:
-      - GitHub: [${data.login}](${data.html_url})
-      - Twitter: [${data.twitter_username || "Not specified"}](https://twitter.com/${
-                  data.twitter_username || ""
-                })
-      `;
-
-                const renderedHTML = `
-      <h1>${data.name || data.login}</h1>
-      <img src="${data.avatar_url}" alt="Avatar" />
-      <p><strong>Bio</strong>: ${data.bio || "No bio available."}</p>
-      <p><strong>Location</strong>: ${data.location || "Not specified"}</p>
-      <p><strong>Company</strong>: ${data.company || "Not specified"}</p>
-      <p><strong>Website</strong>: <a href="${data.blog || "#"}">${
-                  data.blog || "Not specified"
-                }</a></p>
-
-      <h2>GitHub Stats</h2>
-      <ul>
-        <li>Public Repositories: ${data.public_repos}</li>
-        <li>Public Gists: ${data.public_gists}</li>
-        <li>Followers: ${data.followers}</li>
-        <li>Following: ${data.following}</li>
-      </ul>
-
-      <h3>Connect with me:</h3>
-      <ul>
-        <li>GitHub: <a href="${data.html_url}">${data.login}</a></li>
-        <li>Twitter: <a href="https://twitter.com/${data.twitter_username || ""}">${
-          data.twitter_username || "Not specified"
-        }</a></li>
-      </ul>
-      `;
-
-                readmePreview.innerHTML = renderedHTML;
-                readmeDisplay.classList.remove("hidden");
-
-                downloadButton.onclick = () => {
-                  const blob = new Blob([readme], { type: "text/markdown" });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url;
-                  a.download = "README.md";
-                  a.click();
-                  URL.revokeObjectURL(url);
-                };
-
-                setReadmeButton.onclick = async () => {
-                  const token = prompt(
-                    "Enter your GitHub Personal Access Token (with repo scope):",
-                  );
-                  if (!token) {
-                    alert("Token is required to set the README.");
-                    return;
-                  }
-
-                  const repoName = prompt("Enter the name of your repository:");
-                  if (!repoName) {
-                    alert("Repository name is required.");
-                    return;
-                  }
-
-                  try {
-                    const fileResponse = await fetch(
-                      `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
-                      {
-                        headers: {
-                          Authorization: `Bearer ${token}`,
-                        },
-                      },
-                    );
-
-                    let sha = null;
-                    let encodedContent = btoa(readme);
-
-                    if (fileResponse.ok) {
-                      const fileData = await fileResponse.json();
-                      sha = fileData.sha;
-                    } else if (fileResponse.status === 404) {
-                      sha = null;
-                      console.log("README not found. Preparing to create a new one.");
-                    } else {
-                      const errorDetails = await fileResponse.json();
-                      throw new Error(
-                        `Failed to fetch README.md file data: ${errorDetails.message}`,
-                      );
-                    }
-
-                    const apiResponse = await fetch(
-                      `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
-                      {
-                        method: "PUT",
-                        headers: {
-                          Authorization: `Bearer ${token}`,
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                          message: "Update README.md",
-                          content: encodedContent,
-                          sha,
-                        }),
-                      },
-                    );
-
-                    const apiResponseData = await apiResponse.json();
-                    if (apiResponse.ok) {
-                      alert("README.md updated successfully!");
-                    } else {
-                      alert(
-                        `Failed to update README: ${apiResponseData.message || ""}`,
-                      );
-                    }
-                  } catch (error) {
-                    console.error(error);
-                    alert("Error updating the README.");
-                  }
-                };
-
-             getTokenButton.onclick = () => {
- 
-  window.open("https://github.com/settings/tokens", "_blank");
-};
-
+      getTokenButton.onclick = () => {
+       
+        window.open("https://github.com/settings/tokens", "_blank");
+      };
     </script>
   </body>
 </html>
