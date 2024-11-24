@@ -1,4 +1,4 @@
-## <a href="https://sudo-self.github.io/README/">README Generator</a><hr>
+## <a href="https://sudo-self.github.io/README/">README Generator</a>&nbsp;[![Deploy static content to Pages](https://github.com/sudo-self/README/actions/workflows/static.yml/badge.svg)](https://github.com/sudo-self/README/actions/workflows/static.yml)<hr>
 
 # Sudo-Self
 
