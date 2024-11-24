@@ -10,13 +10,14 @@
       body {
         background-color: #1a202c;
         color: #f7fafc;
+        font-family: sans-serif;
       }
 
       .markdown-preview {
         background-color: #2d3748;
         padding: 1.5rem;
         border-radius: 0.5rem;
-        font-family: sans-serif;
+        overflow-wrap: break-word;
       }
 
       .markdown-preview img {
@@ -37,10 +38,18 @@
         background: transparent;
         color: #f7fafc;
       }
+
+      input, button {
+        outline: none;
+      }
+
+      button:hover {
+        transform: scale(1.05);
+      }
     </style>
   </head>
   <body class="min-h-screen flex flex-col items-center justify-center p-4">
-    <header class="mb-10">
+    <header class="mb-10 text-center">
       <a
         class="github-button"
         href="https://github.com/sudo-self/README"
@@ -64,12 +73,12 @@
         type="text"
         id="usernameInput"
         placeholder="Enter GitHub username..."
-        class="p-3 rounded-md bg-white text-black w-64 shadow-md outline-none focus:ring-2 focus:ring-blue-500"
+        class="p-3 rounded-md bg-white text-black w-64 shadow-md focus:ring-2 focus:ring-blue-500"
         required
       />
       <button
         type="submit"
-        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-500 shadow-md transform hover:scale-105 transition-transform"
+        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-500 shadow-md"
       >
         Generate
       </button>
@@ -80,19 +89,19 @@
       <div class="mt-6 flex justify-between gap-4">
         <button
           id="downloadButton"
-          class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-500 shadow-md transform hover:scale-105 transition-transform"
+          class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-500 shadow-md"
         >
           Download
         </button>
         <button
           id="setReadmeButton"
-          class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-500 shadow-md transform hover:scale-105 transition-transform"
+          class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-500 shadow-md"
         >
           Set as README
         </button>
         <button
           id="getTokenButton"
-          class="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 shadow-md transform hover:scale-105 transition-transform"
+          class="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 shadow-md"
         >
           Get Token
         </button>
@@ -102,7 +111,7 @@
     <div id="errorMessage" class="mt-6 text-red-500 hidden"></div>
 
     <footer>
-      <p><a href="https://sudo-self.github.io/README/" style="text-blue-400">sudo-self.github.io/README</a></p>
+      <p><a href="https://sudo-self.github.io/README/" class="text-blue-400">sudo-self.github.io/README</a></p>
     </footer>
 
     <script>
@@ -249,34 +258,40 @@
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    message: sha ? "Updating README.md" : "Initial README.md",
+                    message: "Update README.md",
                     content: encodedContent,
-                    sha: sha,
+                    sha,
                   }),
                 },
               );
 
-              if (!apiResponse.ok) {
-                throw new Error(
-                  `Error setting README: ${await apiResponse.text()}`,
+              const apiResponseData = await apiResponse.json();
+              if (apiResponse.ok) {
+                alert("README.md updated successfully!");
+              } else {
+                alert(
+                  `Failed to update README: ${apiResponseData.message || ""}`,
                 );
               }
-
-              alert("README set successfully.");
             } catch (error) {
-              alert(`Error: ${error.message}`);
+              console.error(error);
+              alert("Error updating the README.");
             }
           };
 
-          getTokenButton.onclick = async () => {
-            alert("Please generate a GitHub Personal Access Token with 'repo' scope.");
+          getTokenButton.onclick = () => {
+            const token = prompt("Enter your GitHub Personal Access Token:");
+            if (!token) return alert("Token is required.");
+            alert("Token received: " + token);
           };
         } catch (error) {
-          errorMessage.textContent = `Error: ${error.message}`;
           errorMessage.classList.remove("hidden");
+          errorMessage.textContent =
+            error.message || "An error occurred. Please try again.";
         }
       });
     </script>
   </body>
 </html>
+
 
