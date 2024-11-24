@@ -279,17 +279,15 @@
             }
           };
 
-          getTokenButton.onclick = () => {
-            const token = prompt("Enter your GitHub Personal Access Token:");
-            if (!token) return alert("Token is required.");
-            alert("Token received: " + token);
-          };
-        } catch (error) {
-          errorMessage.classList.remove("hidden");
-          errorMessage.textContent =
-            error.message || "An error occurred. Please try again.";
-        }
-      });
+         getTokenButton.onclick = () => {
+  const token = prompt(
+    "Enter your GitHub Personal Access Token:\n\nIf you don't have one, create it here: https://github.com/settings/tokens"
+  );
+  
+  if (!token) return alert("Token is required.");
+  alert("Token received: " + token);
+};
+
     </script>
   </body>
 </html>
