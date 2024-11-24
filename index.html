@@ -1,132 +1,138 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<script async defer src="https://buttons.github.io/buttons.js"></script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GitHub README Generator</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      background-color: #1a202c;
-      color: #f7fafc;
-    }
+  <head>
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub README Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background-color: #1a202c;
+        color: #f7fafc;
+      }
 
-    .markdown-preview {
-      background-color: #2d3748;
-      padding: 1.5rem;
-      border-radius: 0.5rem;
-      font-family: sans-serif;
-    }
+      .markdown-preview {
+        background-color: #2d3748;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        font-family: sans-serif;
+      }
 
-    .markdown-preview img {
-      max-width: 100%;
-      border-radius: 0.5rem;
-      margin-bottom: 1rem;
-    }
+      .markdown-preview img {
+        max-width: 100%;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+      }
 
-    .markdown-preview ul {
-      list-style: disc;
-      padding-left: 1.5rem;
-    }
-  </style>
-</head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
-  <header class="mb-10">
- <a class="github-button" href="https://github.com/sudo-self/README" data-color-scheme="no-preference: light_high_contrast; light: light_high_contrast; dark: light_high_contrast;" data-icon="octicon-star" data-size="large" aria-label="Star sudo-self/README on GitHub">Star</a>
-    <h1 class="text-4xl font-extrabold mb-2 text-blue-400">GitHub README Generator</h1>
-    <p class="text-lg text-gray-300">
-      Quickly generate a personalized <code>README.md</code> file for any GitHub user.
-    </p>
-  </header>
-
-
-  <form id="usernameForm" class="flex gap-2 mb-6">
-    <input
-      type="text"
-      id="usernameInput"
-      placeholder="Enter GitHub username..."
-      class="p-3 rounded-md bg-white text-black w-64 shadow-md outline-none focus:ring-2 focus:ring-blue-500"
-      required
-    />
-    <button
-      type="submit"
-      class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-500 shadow-md transform hover:scale-105 transition-transform"
-    >
-      Generate
-    </button>
-  </form>
-
-
-  <div id="readmeDisplay" class="w-full max-w-3xl hidden">
-    <div id="readmePreview" class="markdown-preview shadow-lg"></div>
-    <div class="mt-6 flex justify-between gap-4">
-      <button
-        id="downloadButton"
-        class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-500 shadow-md transform hover:scale-105 transition-transform"
+      .markdown-preview ul {
+        list-style: disc;
+        padding-left: 1.5rem;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <header class="mb-10">
+      <a
+        class="github-button"
+        href="https://github.com/sudo-self/README"
+        data-color-scheme="no-preference: light_high_contrast; light: light_high_contrast; dark: light_high_contrast;"
+        data-icon="octicon-star"
+        data-size="large"
+        aria-label="Star sudo-self/README on GitHub"
+        >Star</a
       >
-        Download
-      </button>
+      <h1 class="text-4xl font-extrabold mb-2 text-blue-400">
+        GitHub README Generator
+      </h1>
+      <p class="text-lg text-gray-300">
+        Quickly generate a personalized <code>README.md</code> file for any
+        GitHub user.
+      </p>
+    </header>
+
+    <form id="usernameForm" class="flex gap-2 mb-6">
+      <input
+        type="text"
+        id="usernameInput"
+        placeholder="Enter GitHub username..."
+        class="p-3 rounded-md bg-white text-black w-64 shadow-md outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      />
       <button
-        id="setReadmeButton"
-        class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-500 shadow-md transform hover:scale-105 transition-transform"
+        type="submit"
+        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-500 shadow-md transform hover:scale-105 transition-transform"
       >
-        Set as README
+        Generate
       </button>
-      <button
-        id="getTokenButton"
-        class="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 shadow-md transform hover:scale-105 transition-transform"
-      >
-        Get Token
-      </button>
+    </form>
+
+    <div id="readmeDisplay" class="w-full max-w-3xl hidden">
+      <div id="readmePreview" class="markdown-preview shadow-lg"></div>
+      <div class="mt-6 flex justify-between gap-4">
+        <button
+          id="downloadButton"
+          class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-500 shadow-md transform hover:scale-105 transition-transform"
+        >
+          Download
+        </button>
+        <button
+          id="setReadmeButton"
+          class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-500 shadow-md transform hover:scale-105 transition-transform"
+        >
+          Set as README
+        </button>
+        <button
+          id="getTokenButton"
+          class="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 shadow-md transform hover:scale-105 transition-transform"
+        >
+          Get Token
+        </button>
+      </div>
     </div>
-  </div>
 
+    <div id="errorMessage" class="mt-6 text-red-500 hidden"></div>
 
-  <div id="errorMessage" class="mt-6 text-red-500 hidden"></div>
+    <script>
+      const usernameForm = document.getElementById("usernameForm");
+      const usernameInput = document.getElementById("usernameInput");
+      const readmeDisplay = document.getElementById("readmeDisplay");
+      const readmePreview = document.getElementById("readmePreview");
+      const downloadButton = document.getElementById("downloadButton");
+      const setReadmeButton = document.getElementById("setReadmeButton");
+      const getTokenButton = document.getElementById("getTokenButton");
+      const errorMessage = document.getElementById("errorMessage");
 
-  <script>
-    const usernameForm = document.getElementById('usernameForm');
-    const usernameInput = document.getElementById('usernameInput');
-    const readmeDisplay = document.getElementById('readmeDisplay');
-    const readmePreview = document.getElementById('readmePreview');
-    const downloadButton = document.getElementById('downloadButton');
-    const setReadmeButton = document.getElementById('setReadmeButton');
-    const getTokenButton = document.getElementById('getTokenButton');
-    const errorMessage = document.getElementById('errorMessage');
+      usernameForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const username = usernameInput.value.trim();
 
-    usernameForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const username = usernameInput.value.trim();
+        if (!username) return;
 
-      if (!username) return;
+        readmeDisplay.classList.add("hidden");
+        errorMessage.classList.add("hidden");
 
+        try {
+          const response = await fetch(
+            `https://api.github.com/users/${username}`,
+            { headers: { Accept: "application/vnd.github.v3+json" } },
+          );
 
-      readmeDisplay.classList.add('hidden');
-      errorMessage.classList.add('hidden');
+          if (!response.ok) {
+            throw new Error("User not found");
+          }
 
-      try {
-        const response = await fetch(
-          `https://api.github.com/users/${username}`,
-          { headers: { Accept: 'application/vnd.github.v3+json' } }
-        );
+          const data = await response.json();
 
-        if (!response.ok) {
-          throw new Error('User not found');
-        }
-
-        const data = await response.json();
-
-     
-        const readme = `
+          const readme = `
 # ${data.name || data.login}
 
 ![Profile Avatar](${data.avatar_url})
 
-**Bio**: ${data.bio || 'No bio available.'}  
-**Location**: ${data.location || 'Not specified'}  
-**Company**: ${data.company || 'Not specified'}  
-**Website**: [${data.blog}](${data.blog || '#'})  
+**Bio**: ${data.bio || "No bio available."}  
+**Location**: ${data.location || "Not specified"}  
+**Company**: ${data.company || "Not specified"}  
+**Website**: [${data.blog}](${data.blog || "#"})  
 
 ## GitHub Stats
 - Public Repositories: ${data.public_repos}
@@ -136,21 +142,20 @@
 
 ### Connect with me:
 - GitHub: [${data.login}](${data.html_url})
-- Twitter: [${data.twitter_username || 'Not specified'}](https://twitter.com/${
-          data.twitter_username || ''
-        })
+- Twitter: [${data.twitter_username || "Not specified"}](https://twitter.com/${
+            data.twitter_username || ""
+          })
 `;
 
-   
-        const renderedHTML = `
+          const renderedHTML = `
 <h1>${data.name || data.login}</h1>
 <img src="${data.avatar_url}" alt="Avatar" />
-<p><strong>Bio</strong>: ${data.bio || 'No bio available.'}</p>
-<p><strong>Location</strong>: ${data.location || 'Not specified'}</p>
-<p><strong>Company</strong>: ${data.company || 'Not specified'}</p>
-<p><strong>Website</strong>: <a href="${data.blog || '#'}">${
-          data.blog || 'Not specified'
-        }</a></p>
+<p><strong>Bio</strong>: ${data.bio || "No bio available."}</p>
+<p><strong>Location</strong>: ${data.location || "Not specified"}</p>
+<p><strong>Company</strong>: ${data.company || "Not specified"}</p>
+<p><strong>Website</strong>: <a href="${data.blog || "#"}">${
+            data.blog || "Not specified"
+          }</a></p>
 
 <h2>GitHub Stats</h2>
 <ul>
@@ -163,111 +168,107 @@
 <h3>Connect with me:</h3>
 <ul>
   <li>GitHub: <a href="${data.html_url}">${data.login}</a></li>
-  <li>Twitter: <a href="https://twitter.com/${data.twitter_username || ''}">${
-          data.twitter_username || 'Not specified'
-        }</a></li>
+  <li>Twitter: <a href="https://twitter.com/${data.twitter_username || ""}">${
+    data.twitter_username || "Not specified"
+  }</a></li>
 </ul>
 `;
 
-        readmePreview.innerHTML = renderedHTML;
-        readmeDisplay.classList.remove('hidden');
+          readmePreview.innerHTML = renderedHTML;
+          readmeDisplay.classList.remove("hidden");
 
-        downloadButton.onclick = () => {
-          const blob = new Blob([readme], { type: 'text/markdown' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'README.md';
-          a.click();
-          URL.revokeObjectURL(url);
-        };
+          downloadButton.onclick = () => {
+            const blob = new Blob([readme], { type: "text/markdown" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "README.md";
+            a.click();
+            URL.revokeObjectURL(url);
+          };
 
-setReadmeButton.onclick = async () => {
-  const token = prompt(
-    'Enter your GitHub Personal Access Token (with repo scope):'
-  );
-  if (!token) {
-    alert('Token is required to set the README.');
-    return;
-  }
+          setReadmeButton.onclick = async () => {
+            const token = prompt(
+              "Enter your GitHub Personal Access Token (with repo scope):",
+            );
+            if (!token) {
+              alert("Token is required to set the README.");
+              return;
+            }
 
-  const repoName = prompt('Enter the name of your repository:');
-  if (!repoName) {
-    alert('Repository name is required.');
-    return;
-  }
+            const repoName = prompt("Enter the name of your repository:");
+            if (!repoName) {
+              alert("Repository name is required.");
+              return;
+            }
 
-  try {
-    const fileResponse = await fetch(
-      `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+            try {
+              const fileResponse = await fetch(
+                `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              );
 
-    let sha = null;
-    let encodedContent = btoa(readme);
+              let sha = null;
+              let encodedContent = btoa(readme);
 
-    if (fileResponse.ok) {
-  
-      const fileData = await fileResponse.json();
-      sha = fileData.sha;
-    } else if (fileResponse.status === 404) {
-     
-      sha = null;
-      console.log('README not found. Preparing to create a new one.');
-    } else {
-      const errorDetails = await fileResponse.json();
-      throw new Error(`Failed to fetch README.md file data: ${errorDetails.message}`);
-    }
+              if (fileResponse.ok) {
+                const fileData = await fileResponse.json();
+                sha = fileData.sha;
+              } else if (fileResponse.status === 404) {
+                sha = null;
+                console.log("README not found. Preparing to create a new one.");
+              } else {
+                const errorDetails = await fileResponse.json();
+                throw new Error(
+                  `Failed to fetch README.md file data: ${errorDetails.message}`,
+                );
+              }
 
-    const apiResponse = await fetch(
-      `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
-      {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: sha ? 'Updating README.md' : 'initial README.md', 
-          content: encodedContent,
-          sha: sha, 
-        }),
-      }
-    );
+              const apiResponse = await fetch(
+                `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
+                {
+                  method: "PUT",
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    message: sha ? "Updating README.md" : "initial README.md",
+                    content: encodedContent,
+                    sha: sha,
+                  }),
+                },
+              );
 
-    if (!apiResponse.ok) {
-      const errorDetails = await apiResponse.json();
-      throw new Error(`Failed to update or create README.md: ${errorDetails.message}`);
-    }
+              if (!apiResponse.ok) {
+                const errorDetails = await apiResponse.json();
+                throw new Error(
+                  `Failed to update or create README.md: ${errorDetails.message}`,
+                );
+              }
 
-    alert('README.md has been successfully updated or created!');
-  } catch (err) {
-    console.error('Error:', err);
-    alert('Error: ' + err.message);
-  }
-};
+              alert("README.md was added!");
+            } catch (err) {
+              console.error("Error:", err);
+              alert("Error: " + err.message);
+            }
+          };
 
-
-
-
-
-
-        getTokenButton.onclick = () => {
-          window.open(
-            'https://github.com/settings/tokens/new?scopes=repo&description=README+Generator',
-            '_blank'
-          );
-        };
-      } catch (error) {
-        errorMessage.textContent = error.message;
-        errorMessage.classList.remove('hidden');
-      }
-    });
-  </script>
-</body>
+          getTokenButton.onclick = () => {
+            window.open(
+              "https://github.com/settings/tokens/new?scopes=repo&description=README+Generator",
+              "_blank",
+            );
+          };
+        } catch (error) {
+          errorMessage.textContent = error.message;
+          errorMessage.classList.remove("hidden");
+        }
+      });
+    </script>
+  </body>
 </html>
-
