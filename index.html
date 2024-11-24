@@ -211,9 +211,11 @@ setReadmeButton.onclick = async () => {
     let encodedContent = btoa(readme);
 
     if (fileResponse.ok) {
+    
       const fileData = await fileResponse.json();
       sha = fileData.sha;
     } else if (fileResponse.status === 404) {
+     
       sha = null;
     } else {
       throw new Error('Failed to fetch README.md file data');
@@ -228,7 +230,7 @@ setReadmeButton.onclick = async () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: 'Updating README.md',
+          message: sha ? 'Updated README.md' : 'initial README.md', 
           content: encodedContent,
           sha: sha, 
         }),
@@ -240,12 +242,13 @@ setReadmeButton.onclick = async () => {
       throw new Error(`Failed to update README.md: ${errorDetails.message}`);
     }
 
-    alert('README.md has been successfully updated!');
+    alert('README.md has been successfully updated or created!');
   } catch (err) {
     console.error('Error:', err);
     alert('Error: ' + err.message);
   }
 };
+
 
 
 
