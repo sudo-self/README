@@ -197,9 +197,32 @@
             return;
           }
 
-          const encodedContent = btoa(readme);
-
           try {
+       
+            const fileResponse = await fetch(
+              `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+
+            let sha = null;
+            let encodedContent = btoa(readme);
+
+            if (fileResponse.ok) {
+         
+              const fileData = await fileResponse.json();
+              sha = fileData.sha;
+            } else if (fileResponse.status === 404) {
+       
+              sha = null;
+            } else {
+              throw new Error('Failed to fetch README.md file data');
+            }
+
+         
             const apiResponse = await fetch(
               `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
               {
@@ -211,19 +234,24 @@
                 body: JSON.stringify({
                   message: 'Updating README.md',
                   content: encodedContent,
+                  sha: sha,
                 }),
               }
             );
 
             if (!apiResponse.ok) {
-              throw new Error('Failed to update README.md');
+              const errorDetails = await apiResponse.json();
+              throw new Error(`Failed to update README.md: ${errorDetails.message}`);
             }
 
             alert('README.md has been successfully updated!');
           } catch (err) {
+            console.error('Error:', err); 
             alert('Error: ' + err.message);
           }
         };
+
+
 
         getTokenButton.onclick = () => {
           window.open(
@@ -239,5 +267,4 @@
   </script>
 </body>
 </html>
-
 
